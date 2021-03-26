@@ -1,0 +1,26 @@
+// menu.rc v1.0
+// Copyright (c) 2021 by: Kepohon
+// 2021.3.25
+
+#include "menu.h"
+/*リソーススクリプト*/
+
+MYMENU MENU
+{
+	POPUP "ファイル(&F)"
+	{
+		MENUITEM "終了(&X)",	IDM_END
+	}
+	
+	POPUP "オプション(&O)"
+	{
+		MENUITEM "オプション(&1)\tShift + Ctrl + 1",	IDM_OPT1
+		MENUITEM SEPARATOR
+		MENUITEM "オプション(&2)\tShift + Ctrl + 2",	IDM_OPT2
+	}
+	
+	POPUP "ヘルプ(&H)"
+	{
+		MENUITEM "About(&A)\tCtrl+A",	IDM_ABOUT
+	}
+}
