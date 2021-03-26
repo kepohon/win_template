@@ -1,17 +1,9 @@
-// Programming 2D Games
-// Copyright (c) 2011 by:
-// Charles Kelly
-// Space War winmain.cpp v1.0
+// ウィンドウズプログラムの雛形 (2021.3.25)
+// Copyright (c) 2021 by: Kepohon
 
-#define _CRTDBG_MAP_ALLOC       // for detecting memory leaks
-#define WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN		// インクルードするファイルの個数を減らすための宣言
 
 #include <Windows.h>
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>             // for detecting memory leaks
-//#include <crtdbg.h>             // for detecting memory leaks
-//#include "spaceWar.h"
 #include "menu.h"
 
 // Function prototypes

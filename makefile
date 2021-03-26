@@ -11,10 +11,10 @@
 #
 
 NAME=winmain
-SRC=winmain.cpp
-OBJ=${SRC:.cpp=.o}
-RC=menu.rc
 EXE=${NAME}.exe
+SRC=winmain.cpp
+RC=menu.rc
+#OBJ=${SRC:.cpp=.o}
 OBJS=$(SRC:.cpp=.o)
 OBJS+=$(RC:.rc=.o)
 
@@ -47,8 +47,9 @@ menu.o: menu.rc menu.h
 
 #${NAME}.o: 
 #Stream.o: Stream.h ArrayStream.h
-menu.o: menu.rc menu.h
+#menu.o: menu.rc menu.h
 winmain.o: menu.h
+#menu.o: menu.h
 
 clean:
 	del *.o
