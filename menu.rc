@@ -1,6 +1,7 @@
 // menu.rc v1.0 (2021.3.25)
 // Copyright (c) 2021 by: Kepohon
 
+#include <windows.h>
 #include "menu.h"
 /*リソーススクリプト*/
 
@@ -23,3 +24,17 @@ MYMENU MENU
 		MENUITEM "About(&A)\tCtrl+A",	IDM_ABOUT
 	}
 }
+
+
+MYDLG DIALOGEX 0, 0, 186, 90
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "オプション"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+{
+	DEFPUSHBUTTON	"OK", IDOK, 7, 69, 50, 14
+	PUSHBUTTON		"キャンセル", IDCANCEL, 129, 69, 50, 14
+	LTEXT			"初めてのダイアログボックスです",
+					IDC_STATIC, 39, 16, 94, 8
+}
+
+

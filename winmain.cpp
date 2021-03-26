@@ -10,6 +10,7 @@
 int		WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int);
 bool	CreateMainWindow(HWND&, HINSTANCE, int);
 LRESULT	WINAPI WinProc(HWND, UINT, WPARAM, LPARAM);
+BOOL	CALLBACK MyDlgProc(HWND, UINT, WPARAM, LPARAM);
 bool	AnotherInstance();
 
 // Global variables
@@ -244,6 +245,10 @@ LRESULT WINAPI WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		case IDM_END:
 			SendMessage(hwnd, WM_CLOSE, wParam, lParam);
 			break;
+			
+		case IDM_OPT1:
+			DialogBox(hInstance, TEXT("MYDLG"), hwnd, (DLGPROC)MyDlgProc);
+			break;
 		}
 		break;
 	
@@ -267,6 +272,29 @@ LRESULT WINAPI WinProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 //	return DefWindowProc(hwnd, msg, wParam, lParam);	// let Windows handle it
 
 //	return (spacewar->messageHandler(hwnd, msg, wParam, lParam));
+}
+
+//=============================================================================
+// ダイアログプロシージャー
+// Returns: false on error
+//=============================================================================
+BOOL	CALLBACK MyDlgProc(HWND hDlg, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	switch(msg)
+	{
+	case WM_COMMAND:
+		switch (LOWORD(wParam))
+		{
+		case IDOK:
+			EndDialog(hDlg, IDOK);
+			return TRUE;
+		case IDCANCEL:
+			EndDialog(hDlg, IDCANCEL);
+			return TRUE;
+		}
+		return FALSE;
+	}
+	return FALSE;
 }
 
 
