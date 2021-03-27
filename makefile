@@ -1,4 +1,4 @@
-# makefile    (sample)
+# makefile    (完成版)
 #	2021.2.25
 #
 # $@  ターゲットのファイル名を表します
@@ -10,6 +10,7 @@
 #   example =>  vpath %.c src
 #
 
+.SUFFIXES : .o .c .rc
 NAME=winmain
 EXE=${NAME}.exe
 SRC=winmain.cpp
@@ -38,16 +39,16 @@ ${NAME}.exe: ${OBJS}
 .cpp.o:
 	${CC} -o $@ -c $< ${CFLAGS}
 
-menu.o: menu.rc menu.h
-	windres menu.rc menu.o
-
-#.rc.o:
+.rc.o: $<
+	$(MENU) $< $@
 #	$(MENU) $(RC) $*.o
-#	$(MENU) $< $@
+
+#menu.o: menu.rc menu.h
+#	windres menu.rc menu.o
 
 #${NAME}.o: 
 #Stream.o: Stream.h ArrayStream.h
-#menu.o: menu.rc menu.h
+menu.o: menu.rc menu.h
 winmain.o: menu.h
 #menu.o: menu.h
 
