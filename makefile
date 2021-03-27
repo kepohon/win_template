@@ -27,7 +27,9 @@ CFLAGS=-Wall -O3
 #CFLAGS=-Wall -O3 -finput-charset=UTF-8 -fexec-charset=CP932
 # CFLAGS=-finput-charset=UTF-8 -fexec-charset=CP932 -I include  # -I は、インクルードファイルのフォルダを指定
 
-LFLAGS=-mwindows
+#libwinmm.lib(省電力コード用ライブラリ)をリンクした(2021.3.27)
+LFLAGS=-mwindows -lwinmm
+#LFLAGS=-mwindows
 # case windows app
 #	LFLAGS=-mwindows
 

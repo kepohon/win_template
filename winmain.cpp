@@ -4,31 +4,47 @@
 #define WIN32_LEAN_AND_MEAN		// インクルードするファイルの個数を減らすための宣言
 
 #include <Windows.h>
+#include <Mmsystem.h>
 #include "menu.h"
 
-// Function prototypes
+// 関数プロトタイプ宣言
 int		WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int);
 bool	CreateMainWindow(HWND&, HINSTANCE, int);
 LRESULT	WINAPI WinProc(HWND, UINT, WPARAM, LPARAM);
 BOOL	CALLBACK MyDlgProc(HWND, UINT, WPARAM, LPARAM);
 bool	AnotherInstance();
 
-// Global variables
+// グローバル変数
 HINSTANCE	hInstance;
 HDC			hdc;				// handle to device context
 TCHAR		ch = ' ';			// character entered
 RECT		rect;				// rectangle structure
 PAINTSTRUCT ps;					// used in WM_PAINT
 bool		vkKeys[256];		// state of virtual keys, false or true
+HWND		hwnd = NULL;
+								// 高精度タイマー関連
+LARGE_INTEGER	timerFreq;		// 周波数
+LARGE_INTEGER	timerStart;		// 開始カウンタ
+LARGE_INTEGER	timerEnd;		// 終了カウンタ
+float			frameTime;		// time required for last frame
+float			fps=100;		// FPS(frames per second)
+DWORD			sleepTime;		// number of milli-seconds to sleep between frames
 
 // Game pointer
 //Spacewar *spacewar = NULL;
-HWND		hwnd = NULL;
+
+// 定数
 const bool	FULLSCREEN = false;
 const char	CLASS_NAME[] = "Template";
 const char	WIN_TITLE[] = "Template Window";
 const int	WIN_WIDTH = 800;
 const int	WIN_HEIGHT = 600;
+													// 高精度タイマー関連
+const float FRAME_RATE = 240.0f;					// the target frame rate (frames/sec)
+const float MIN_FRAME_RATE = 10.0f;					// the minimum frame rate
+const float MIN_FRAME_TIME = 1.0f/FRAME_RATE;		// minimum desired time for 1 frame
+const float MAX_FRAME_TIME = 1.0f/MIN_FRAME_RATE;	// maximum time used in calculations
+
 
 //=============================================================================
 // Starting point for a Windows application
@@ -61,6 +77,14 @@ int WINAPI WinMain(	HINSTANCE hInstance,		// アプリケーションのポインタ
 	
 	try {
 		//        spacewar->initialize(hwnd);     // throws GameError
+		{
+			// 高精度タイマーの周波数を取得する
+			if(QueryPerformanceFrequency(&timerFreq) == false)
+				;
+				//throw(GameError(gameErrorNS::FATAL_ERROR, "Error initializing high resolution timer"));
+
+			QueryPerformanceCounter(&timerStart);	// タイマー計測開始
+		}
 
 		// メッセージループ
 		int done = 0;
@@ -76,8 +100,33 @@ int WINAPI WinMain(	HINSTANCE hInstance,		// アプリケーションのポインタ
 				DispatchMessage(&msg);
 			}
 			else
-				;
-			//                spacewar->run(hwnd);    // run the spacewar loop
+			{
+				//                spacewar->run(hwnd);    // run the spacewar loop
+				{	// 省電力コードの追加(2021.3.27)
+					
+					// calculate elapsed time of last frame, save in frameTime
+					QueryPerformanceCounter(&timerEnd);
+					frameTime = (float)(timerEnd.QuadPart - timerStart.QuadPart ) / (float)timerFreq.QuadPart;
+					
+					// Power saving code, requires winmm.lib
+					// if not enough time has elapsed for desired frame rate
+					if (frameTime < MIN_FRAME_TIME) 
+					{
+						sleepTime = (DWORD)((MIN_FRAME_TIME - frameTime)*1000);
+						timeBeginPeriod(1);         // Request 1mS resolution for windows timer
+						Sleep(sleepTime);           // release cpu for sleepTime
+						timeEndPeriod(1);           // End 1mS timer resolution
+						//return;
+					}
+					else{
+						if (frameTime > 0.0)
+							fps = (fps*0.99f) + (0.01f/frameTime);  // average fps
+						if (frameTime > MAX_FRAME_TIME) // if frame rate is very slow
+							frameTime = MAX_FRAME_TIME; // limit maximum frameTime
+						timerStart = timerEnd;
+					}
+				}
+			}
 		}
 		//        SAFE_DELETE (spacewar);     // free memory before exit
 		return msg.wParam;
